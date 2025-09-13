@@ -1,4 +1,4 @@
-import { DocumentClone, MediaRuleClone } from "./cloner.types";
+import { DocumentClone, MediaRuleClone, StyleSheetClone } from "./cloner.types";
 import { CSSParseResult } from "./parse.types";
 
 const STYLE_RULE_TYPE = 1;
@@ -24,4 +24,17 @@ function parseCSS(doc: DocumentClone): CSSParseResult {
   return {
     breakpoints: Array.from(breakpoints).sort((a, b) => a - b),
   };
+}
+
+function parseStyleSheet(
+  styleSheet: StyleSheetClone,
+  globalBaselineWidth: number
+): void {
+  const baselineMediaRule = styleSheet.cssRules.find(
+    (rule) =>
+      rule.type === MEDIA_RULE_TYPE &&
+      (rule as MediaRuleClone).cssRules.length === 0
+  ) as MediaRuleClone;
+
+  const baselineWidth = baselineMediaRule?.minWidth ?? globalBaselineWidth;
 }
